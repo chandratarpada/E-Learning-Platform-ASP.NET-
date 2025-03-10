@@ -1,100 +1,130 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site1.master.cs" Inherits="Admin_learning.Site1" %>
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site1.master.cs" Inherits="my_project.Site1" %>
 
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Admin Dashboard</title>
-    <style>
-        .activity-grid {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Educa</title>
 
-        .activity-grid th {
-            background-color: #f6f6f9;
-            padding: 12px;
-            text-align: left;
-            font-weight: 600;
-        }
+    <!-- Font Awesome CDN link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"/>
 
-        .activity-grid td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-        }
+    <!-- Custom CSS file link -->
+    <link rel="stylesheet" href="css/style.css"/>
 
-        .activity-grid tr:hover {
-            background-color: #f5f5f5;
-        }
-    </style>
-    <link rel="stylesheet" href="style.css"/>
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"/>
-    <asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+        <style>
+        /* Hide user options by default */
+.user-options {
+    display: none;
+    position: absolute;
+    top: 50px; /* Adjust this based on your layout */
+    right: 20px; /* Adjust this based on your layout */
+    background-color: #fff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 1000;
+}
+
+/* Show the menu when "show" class is added */
+.user-options.show {
+    display: block;
+}
+
+/* Style the links inside the user options menu */
+.user-options a {
+    display: block;
+    padding: 10px;
+    color: #333;
+    text-decoration: none;
+}
+
+.user-options a:hover {
+    background-color: #f0f0f0;
+}
+</style>
+        <!-- Additional head content can be added here in specific content pages -->
+    </asp:ContentPlaceHolder>
 </head>
 <body>
-    <form id="form1" runat="server">
-        <div>
-            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
-                <!-- Content for the body will be rendered here -->
-            </asp:ContentPlaceHolder>
+
+    <!-- Header -->
+    <header class="header">
+        <section class="flex">
+            <a href="home.aspx" class="logo">Educa.</a>
+            <form action="search.aspx" method="post" class="search-form">
+                <input type="text" name="search_box" placeholder="search courses..." maxlength="100"/>
+                <button type="submit" class="fas fa-search"></button>
+            </form>
+            <div class="icons">
+                <div id="menu-btn" class="fas fa-bars"></div>
+                <div id="search-btn" class="fas fa-search"></div>
+                <div id="user-btn" class="fas fa-user"></div>
+                <div id="toggle-btn" class="fas fa-sun"></div>
+            </div>
+            <div class="profile">
+         <img src="ProfileImages/pic-1.jpg" class="image" alt=""/>
+         <h3 class="name">shaikh anas</h3>
+         <p class="role">studen</p>
+         <a href="#" class="btn">view profile</a>
+         <div class="flex-btn">
+            <a href="login.aspx" class="option-btn">login</a>
+            <a href="register.aspx" class="option-btn">register</a>
+         </div>
+      </div>
+        </section>
+    </header>
+
+    <!-- Sidebar -->
+    <div class="side-bar">
+        <div id="close-btn">
+            <i class="fas fa-times"></i>
         </div>
 
-        <!-- Side Navigation Menu -->
-        <nav>
-            <div class="logo-name">
-                <div class="logo-image">
-                    <img src="img/logo.png" alt=""/>
-                </div>
-                <span class="logo_name">CodingLab</span>
-            </div>
+        <div class="profile">
+            <img src="ProfileImages/pic-1.jpg" class="image" alt=""/>
+            <h3 class="name">Shaikh Anas</h3>
+            <p class="role">Student</p>
+            <a href="#" class="btn">View Profile</a>
+        </div>
 
-            <div class="menu-items">
-                <ul class="nav-links">
-                    <li><a href="index.aspx">
-                        <i class="uil uil-estate"></i>
-                        <span class="link-name">Dashboard</span>
-                    </a></li>
-                    <li><a href="playlist.aspx">
-                        <i class="uil uil-files-landscapes"></i>
-                        <span class="link-name">PlayList</span>
-                    </a></li>
-                    <li><a href="lecturer.aspx">
-                        <i class="uil uil-chart"></i>
-                        <span class="link-name">Lecturer</span>
-                    </a></li>
-                    <li><a href="staff.aspx">
-                        <i class="uil uil-thumbs-up"></i>
-                        <span class="link-name">Staff</span>
-                    </a></li>
-                    <li><a href="user.aspx">
-                        <i class="uil uil-comments"></i>
-                        <span class="link-name">User</span>
-                    </a></li>
-                    <li><a href="contact.aspx">
-                        <i class="uil uil-share"></i>
-                        <span class="link-name">Contact</span>
-                    </a></li>
-                </ul>
-
-                <ul class="logout-mode">
-                    <li><a href="logout.aspx">
-                    <i class="uil uil-signout"></i>
-                    <span class="link-name">Logout</span>
-                    </a></li>
-
-
-                    <li class="mode">
-                        <a href="#">
-                            <i class="uil uil-moon"></i>
-                            <span class="link-name">Dark Mode</span>
-                        </a>
-                        <div class="mode-toggle">
-                            <span class="switch"></span>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+        <nav class="navbar">
+            <a href="home.aspx"><i class="fas fa-home"></i><span>Home</span></a>
+            <a href="about.aspx"><i class="fas fa-question"></i><span>About</span></a>
+            <a href="courses.aspx"><i class="fas fa-graduation-cap"></i><span>Courses</span></a>
+            <a href="teachers.aspx"><i class="fas fa-chalkboard-user"></i><span>Teachers</span></a>
+            <a href="contact.aspx"><i class="fas fa-headset"></i><span>Contact Us</span></a>
         </nav>
-    </form>
+    </div>
+
+    
+
+    <!-- Main Content Placeholder -->
+    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+        <!-- Content will be inserted here from content pages -->
+    </asp:ContentPlaceHolder>
+
+    <!-- Footer -->
+    <footer class="footer">
+        &copy; Copyright @ 2022 by <span>Mr. Web Designer</span> | All Rights Reserved!
+    </footer>
+
+    <!-- Custom JS File -->
+    <script src="js/script.js"></script>
+
+    <script>
+        // Get the elements
+        const userBtn = document.getElementById('user-btn');
+        const userOptions = document.getElementById('user-options');
+
+        // Toggle visibility of user options
+        userBtn.addEventListener('click', () => {
+            userOptions.classList.toggle('show');
+        });
+    </script>
+
 </body>
 </html>

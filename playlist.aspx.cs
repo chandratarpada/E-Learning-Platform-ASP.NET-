@@ -1,92 +1,58 @@
 ﻿using System;
+using System.Data;
 using System.Data.SqlClient;
-using System.IO;
 using System.Configuration;
+using System.Web.UI.WebControls;
 
-namespace Admin_learning
+namespace my_project
 {
-    public partial class Playlist : System.Web.UI.Page
+    public partial class playlist : System.Web.UI.Page
     {
-        private readonly string connectionString = ConfigurationManager.ConnectionStrings["db"].ConnectionString;
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                LoadGrid();
-            }
-        }
-
-        private void LoadGrid()
-        {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                string query = "SELECT * FROM Playlist";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                if (Request.QueryString["Id"] != null)
                 {
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    int playlistId;
+                    if (int.TryParse(Request.QueryString["Id"], out playlistId))
                     {
-                        System.Data.DataTable dt = new System.Data.DataTable();
-                        da.Fill(dt);
-                        GridView1.DataSource = dt;
-                        GridView1.DataBind();
+                        LoadVideos(playlistId);
                     }
                 }
             }
         }
 
-        protected void btnSave_Click(object sender, EventArgs e)
+        private void LoadVideos(int playlistId)
         {
-            string imagePath = "";  // Variable to store image path
-
-            // Check if a file is uploaded
-            if (fileUploadPimg.HasFile)
+            string connStr = ConfigurationManager.ConnectionStrings["db"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
             {
-                string fileName = Path.GetFileName(fileUploadPimg.FileName);
-                string folderPath = Server.MapPath("~/Uploads/"); // Folder to store images
-                if (!Directory.Exists(folderPath))
-                {
-                    Directory.CreateDirectory(folderPath); // Create folder if it doesn't exist
-                }
+                string query = "SELECT l.Name AS LecturerName, l.Video " +
+                               "FROM Lecturer l " +
+                               "WHERE l.Playlist_id = @PlaylistId";
 
-                imagePath = "~/Uploads/" + fileName;
-                fileUploadPimg.SaveAs(folderPath + fileName);
-            }
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                string query = "INSERT INTO Playlist (Name, Description, Pimg) VALUES (@Name, @Description, @Pimg)";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Name", txtName.Text);
-                    cmd.Parameters.AddWithValue("@Description", txtDescription.Text);
-                    cmd.Parameters.AddWithValue("@Pimg", imagePath);
-
+                    cmd.Parameters.AddWithValue("@PlaylistId", playlistId);
                     conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
-            }
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
 
-            LoadGrid(); // Refresh grid after inserting data
-        }
-
-        protected void GridView1_RowCommand(object sender, System.Web.UI.WebControls.GridViewCommandEventArgs e)
-        {
-            int playlistId = Convert.ToInt32(e.CommandArgument);
-
-            if (e.CommandName == "cmd_delete")
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    string query = "DELETE FROM Playlist WHERE Playlist_id = @Playlist_id";
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    // Ensure we fetch the correct video path
+                    foreach (DataRow row in dt.Rows)
                     {
-                        cmd.Parameters.AddWithValue("@Playlist_id", playlistId);
-                        conn.Open();
-                        cmd.ExecuteNonQuery();
+                        if (!DBNull.Value.Equals(row["Video"]) && !string.IsNullOrEmpty(row["Video"].ToString()))
+                        {
+                            // Assuming "Video" column stores paths like "Videos/vid-5.mp4"
+                            row["Video"] = ResolveUrl("~/") + row["Video"].ToString();
+                        }
                     }
+
+                    rptVideos.DataSource = dt;
+                    rptVideos.DataBind();
                 }
-                LoadGrid(); // Refresh GridView after deletion
             }
         }
     }

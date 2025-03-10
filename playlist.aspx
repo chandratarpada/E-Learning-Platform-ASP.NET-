@@ -1,156 +1,84 @@
-﻿<%@ Page Title="Playlist Management" Language="C#" MasterPageFile="~/Site1.Master" AutoEventWireup="true" CodeBehind="playlist.aspx.cs" Inherits="Admin_learning.Playlist" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/Site1.Master" AutoEventWireup="true" CodeBehind="playlist.aspx.cs" Inherits="my_project.playlist" %>
 
-<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <link rel="stylesheet" href="style.css" />
-
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <title>Playlist - Educa</title>
+    <link rel="stylesheet" href="css/courses.css"/>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
+    .video-container {
+        width: 90%;
+        max-width: 1200px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        margin: auto;
+    }
 
-        .form-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            margin-top: 20px;
-        }
+    .video-card {
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        text-align: center;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
+    .video-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+    }
 
-        table, th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
+    .video-card h3 {
+        margin: 10px 0;
+        font-size: 18px;
+        color: #800080;
+        font-weight: 600;
+    }
 
-        th {
-            background-color: #f6f6f9;
-            font-weight: bold;
-        }
-
-        .button-save {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: 0.3s;
-        }
-
-        .button-save:hover {
-            background-color: #45a049;
-        }
-
-        .grid-container {
-            margin-top: 30px;
-            width: 100%;
-            overflow-x: auto;
-            text-align: center;
-        }
-
-        .grid-container table {
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .grid-container td, .grid-container th {
-            padding: 12px;
-            text-align: center;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .edit-button, .delete-button {
-            text-decoration: none;
-            padding: 6px 12px;
-            border-radius: 5px;
-            color: white;
-            transition: 0.3s;
-        }
-
-        .edit-button {
-            background-color: #007bff;
-        }
-
-        .edit-button:hover {
-            background-color: #0056b3;
-        }
-
-        .delete-button {
-            background-color: #dc3545;
-        }
-
-        .delete-button:hover {
-            background-color: #a71d2a;
-        }
+    .video-preview video {
+        width: 100%;
+        height: 180px;
+        border-radius: 10px;
+        object-fit: cover;
+        cursor: pointer;
+    }
     </style>
 
-    <div class="form-container">
-        <h2>Manage Playlists</h2>
-        <table>
-            <tr>
-                <td><strong>Name:</strong></td>
-                <td><asp:TextBox ID="txtName" runat="server" CssClass="input-field"></asp:TextBox></td>
-            </tr>
-            <tr>
-                <td><strong>Description:</strong></td>
-                <td><asp:TextBox ID="txtDescription" runat="server" CssClass="input-field"></asp:TextBox></td>
-            </tr>
-            <tr>
-                <td><strong>Upload Image:</strong></td>
-                <td><asp:FileUpload ID="fileUploadPimg" runat="server" /></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>
-                    <asp:Button ID="btnSave" runat="server" Text="Save" OnClick="btnSave_Click" CssClass="button-save" />
-                </td>
-            </tr>
-        </table>
-    </div>
+    <script>
+        function playFullScreen(videoElement) {
+            if (videoElement.requestFullscreen) {
+                videoElement.requestFullscreen();
+            } else if (videoElement.mozRequestFullScreen) { // Firefox
+                videoElement.mozRequestFullScreen();
+            } else if (videoElement.webkitRequestFullscreen) { // Chrome, Safari & Opera
+                videoElement.webkitRequestFullscreen();
+            } else if (videoElement.msRequestFullscreen) { // IE/Edge
+                videoElement.msRequestFullscreen();
+            }
+            videoElement.play();
+        }
+    </script>
 
-    <div class="grid-container">
-        <h2>Playlist List</h2>
-        <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CssClass="activity-grid" OnRowCommand="GridView1_RowCommand">
-            <Columns>
-                <asp:BoundField DataField="Playlist_id" HeaderText="ID" />
-                <asp:BoundField DataField="Name" HeaderText="Name" />
-                <asp:BoundField DataField="Description" HeaderText="Description" />
+</asp:Content>
 
-                <asp:TemplateField HeaderText="Image">
-                    <ItemTemplate>
-                        <asp:Image ID="PlaylistImage" runat="server" ImageUrl='<%# Eval("Pimg") %>' Width="80px" Height="80px" />
-                    </ItemTemplate>
-                </asp:TemplateField>
-
-                <asp:TemplateField HeaderText="Actions">
-                    <ItemTemplate>
-                        <div class="action-buttons">
-                            <asp:LinkButton ID="btnEdit" runat="server" CommandArgument='<%# Eval("Playlist_id") %>' CommandName="cmd_edit" CssClass="edit-button">Edit</asp:LinkButton>
-                            <asp:LinkButton ID="btnDelete" runat="server" CommandArgument='<%# Eval("Playlist_id") %>' CommandName="cmd_delete" CssClass="delete-button">Delete</asp:LinkButton>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <section class="playlist">
+        <h1 class="heading">Playlist Videos</h1>
+        <div class="video-container">
+            <asp:Repeater ID="rptVideos" runat="server">
+                <ItemTemplate>
+                    <div class="video-card">
+                        <h3><%# Eval("LecturerName") %></h3>
+                        <div class="video-preview">
+                            <video width="100%" height="180" controls onclick="playFullScreen(this)">
+                                <source src='<%# ResolveUrl(Eval("Video").ToString()) %>' type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
                         </div>
-                    </ItemTemplate>
-                </asp:TemplateField>
-
-            </Columns>
-        </asp:GridView>
-    </div>
+                    </div>
+                </ItemTemplate>
+            </asp:Repeater>
+        </div>
+    </section>
 </asp:Content>

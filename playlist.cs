@@ -1,59 +1,52 @@
-﻿using System;
-using System.Data;
-using System.Data.SqlClient;
+﻿// Model file: PlaylistModel.cs
+using System;
 using System.Configuration;
+using System.Data.SqlClient;
 
-namespace Admin_learning
+namespace my_project.Models
 {
-    public class PlaylistManager
+    public class PlaylistModel
     {
-        private readonly string connectionString = ConfigurationManager.ConnectionStrings["db"].ConnectionString;
+        public int PlaylistId { get; set; }
+        public string PlaylistName { get; set; }
+        public string Description { get; set; }
+        public string Thumbnail { get; set; }
+        public int StaffId { get; set; }
+        public string StaffName { get; set; }
+        public string StaffImage { get; set; }
 
-        public DataTable GetAllPlaylists()
+        public static PlaylistModel GetPlaylistDetails(int playlistId)
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            PlaylistModel playlist = null;
+            string connString = ConfigurationManager.ConnectionStrings["db"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connString))
             {
-                string query = "SELECT Playlist_id, Name, Description, Pimg FROM Playlist";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(
+                    "SELECT p.*, s.Name AS StaffName, s.Image AS StaffImage " +
+                    "FROM Playlist p " +
+                    "JOIN Staff s ON p.Staff_id = s.Id " +
+                    "WHERE p.Playlist_id = @PlaylistId", conn);
+
+                cmd.Parameters.AddWithValue("@PlaylistId", playlistId);
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
                 {
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    playlist = new PlaylistModel
                     {
-                        DataTable dt = new DataTable();
-                        da.Fill(dt);
-                        return dt;
-                    }
+                        PlaylistId = Convert.ToInt32(reader["Playlist_id"]),
+                        PlaylistName = reader["Playlist_name"].ToString(),
+                        Description = reader["Description"].ToString(),
+                        Thumbnail = reader["Thumbnail"].ToString(),
+                        StaffId = Convert.ToInt32(reader["Staff_id"]),
+                        StaffName = reader["StaffName"].ToString(),
+                        StaffImage = reader["StaffImage"].ToString()
+                    };
                 }
             }
-        }
-
-        public void InsertPlaylist(string name, string description, string pimg)
-        {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                string query = "INSERT INTO Playlist (Name, Description, Pimg) VALUES (@Name, @Description, @Pimg)";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@Name", name);
-                    cmd.Parameters.AddWithValue("@Description", description);
-                    cmd.Parameters.AddWithValue("@Pimg", pimg);
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
-            }
-        }
-
-        public void DeletePlaylist(int id)
-        {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                string query = "DELETE FROM Playlist WHERE Playlist_id = @Playlist_id";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@Playlist_id", id);
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
-            }
+            return playlist;
         }
     }
 }
