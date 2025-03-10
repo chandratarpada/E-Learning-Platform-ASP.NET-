@@ -1,0 +1,213 @@
+/* ====== General Styles ====== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f4f4f4;
+    color: #333;
+    padding: 20px;
+}
+
+/* ====== Common Layout ====== */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ====== Form Styling ====== */
+.form-container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    margin-top: 20px;
+}
+
+    .form-container table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+        .form-container table td {
+            padding: 10px;
+        }
+
+.input-field {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* ====== Buttons ====== */
+.button-save {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+    .button-save:hover {
+        background-color: #45a049;
+    }
+
+.edit-button, .delete-button {
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    color: white;
+    transition: 0.3s;
+}
+
+.edit-button {
+    background-color: #007bff;
+}
+
+    .edit-button:hover {
+        background-color: #0056b3;
+    }
+
+.delete-button {
+    background-color: #dc3545;
+}
+
+    .delete-button:hover {
+        background-color: #a71d2a;
+    }
+
+/* ====== Tables (Used in Users, Playlist, Lecturer, Staff, Contact) ====== */
+.grid-container {
+    margin-top: 30px;
+    width: 100%;
+    overflow-x: auto;
+    text-align: center;
+}
+
+.activity-grid {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+    .activity-grid th {
+        background: #007bff;
+        color: white;
+        padding: 10px;
+    }
+
+    .activity-grid td {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* ====== Dashboard Overview (Users, Staff, Lecturer) ====== */
+.dashboard {
+    padding: 20px;
+}
+
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 10px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+/* Search Box */
+.search-box {
+    display: flex;
+    align-items: center;
+    background: #f4f4f4;
+    padding: 5px 10px;
+    border-radius: 8px;
+}
+
+    .search-box input {
+        border: none;
+        background: none;
+        outline: none;
+        padding: 5px;
+    }
+
+/* Profile Image */
+.top img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+/* Overview Boxes */
+.overview {
+    margin-top: 20px;
+}
+
+.boxes {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.box {
+    flex: 1;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+    .box:hover {
+        transform: scale(1.05);
+    }
+
+.box1 {
+    background: #007bff;
+    color: white;
+}
+
+.box2 {
+    background: #28a745;
+    color: white;
+}
+
+.box3 {
+    background: #dc3545;
+    color: white;
+}
+
+.box i {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .boxes {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .activity-grid {
+        font-size: 14px;
+    }
+}
